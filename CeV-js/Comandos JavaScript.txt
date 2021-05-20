@@ -1,0 +1,33 @@
+Comandos JavaScript
+
+Comandos de impressão na tela
+
+window.alert // imprime um alerta na tela
+window.confirm // imprime msg na tela com 2 botões (ok e cancela)
+window.prompt // imprime msg na tela e aguarda resposta
+
+Conversões de variáveis
+
+Number.parseInt(n) // converte a variável n para inteiro
+Number.parseFloat(n) // converte a variável n para ponto flutuante
+Number(n) // converte a variável n para Number
+String(n) ou n.toString() // converte a variável n para String
+
+Formatando Strings
+
+'Estou aprendendo s' // escrevendo sem interpolação - não funciona no JS
+'Estou aprendendo ' + s // escrevendo por concatenação
+`Estou aprendendo ${s}` // escrevendo por template string (+ usual)
+
+${} -> Placeholder
+
+s.lenght // quantos caracteres tem a string s
+s.toUpperCase // todos os caracteres da string s em letra Maiúscula
+s.toLowerCase // todos os caracteres da string s em letra Minúscula
+
+Formatando Números
+
+n.toFixed(2) // utiliza 2 casas decimais
+n.toFixed(2).replace('.', ',') // utiliza 2 casas decimais e substitui ponto por vírgula
+n.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}) // converte para uma string com o formato de moeda local
+
