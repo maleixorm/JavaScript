@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Text to MP3</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/recorderjs/0.1.0/recorder.min.js"></script>
+  <script src="https://cdn.rawgit.com/akrennmair/libmp3lame-js/master/libmp3lame.min.js"></script>
+</head>
+<body>
+  <h1>Text to MP3</h1>
+  <textarea id="text" rows="10" cols="30">Digite seu texto aqui...</textarea>
+  <br>
+  <button onclick="generateMP3()">Generate MP3</button>
+  <audio id="audio" controls></audio>
+
+  <script>
+    let recorder;
+    let audioContext;
+    let audioChunks = [];
+
+    function synthesizeSpeech(callback) {
+      const text = document.getElementById('text').value;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'pt-BR';
+      utterance.onend = function(event) {
+        console.log('Speech has finished');
+        callback();
+      };
+      speechSynthesis.speak(utterance);
+    }
+
+    function startRecording() {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        const input = audioContext.createMediaStreamSource(stream);
+        recorder = new Recorder(input);
+        recorder.record();
+      });
+    }
+
+    function stopRecording(callback) {
+      recorder.stop();
+      recorder.exportWAV(blob => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const buffer = new Uint8Array(reader.result);
+          const mp3Blob = encodeMP3(buffer);
+          callback(mp3Blob);
+        };
+        reader.readAsArrayBuffer(blob);
+      });
+    }
+
+    function encodeMP3(buffer) {
+      const mp3Encoder = new lamejs.Mp3Encoder(1, audioContext.sampleRate, 128);
+      const mp3Data = [];
+      const samples = new Int16Array(buffer);
+      const mp3Buffer = mp3Encoder.encodeBuffer(samples);
+      mp3Data.push(mp3Buffer);
+      const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+      return mp3Blob;
+    }
+
+    function generateMP3() {
+      startRecording();
+      synthesizeSpeech(() => {
+        stopRecording(mp3Blob => {
+          const audio = document.getElementById('audio');
+          audio.src = URL.createObjectURL(mp3Blob);
+          audio.play();
+        });
+      });
+    }
+  </script>
+</body>
+</html>
