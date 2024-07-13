@@ -1,6 +1,7 @@
 var video = [];
 video[1] = [];
 video[1]['nome'] = 'Fullmetal Alchemist';
+video[2]['nome'] = 'Naruto';
 video[1]['categoria'] = 'Anime';
 
 function getVideo(video) {
